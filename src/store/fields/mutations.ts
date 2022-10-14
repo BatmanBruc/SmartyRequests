@@ -18,18 +18,18 @@ export const mutations: MutationTree<FieldState> = {
     [MutationTypes.CHANGE_FIELDS_PAGE](state, payload: number){
         state.page = payload;
     },
-    [MutationTypes.CHANGE_FIELDS_LOADING](state, payload: number){
+    [MutationTypes.CHANGE_FIELDS_LOADING](state){
         state.loading = !state.loading;
     },
     [MutationTypes.SET_FIELD_ASSOCIATIONS](state, payload: Array<Field>){
-        let associations: {
+        const associations: {
             [key: string]: string
         } = {
             name: 'Имя',
             description: 'Описание',
             date: 'Дата'
         }
-        for (let field of payload) {
+        for (const field of payload) {
             associations[field.name] = field.title
         }
         console.log(associations)

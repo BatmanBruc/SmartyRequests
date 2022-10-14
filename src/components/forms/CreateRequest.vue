@@ -20,7 +20,7 @@
             <a-form-item has-feedback label="Дата" name="date">
                 <a-date-picker v-model:value="formState.date" />
             </a-form-item>
-            <a-form-item v-for="field in fields" has-feedback :label="field.title" :name="field.name">
+            <a-form-item v-for="field in fields" has-feedback :label="field.title" :name="field.name" v-bind:key="field.id">
                 <a-input v-if="field.inputType == 1" v-model:value="formState[field.name]" type="text" autocomplete="off" />
                 <a-textarea v-if="field.inputType == 2" v-model:value="formState[field.name]" type="text" autocomplete="off" />
                 <a-checkbox v-if="field.inputType == 3" v-model:checked="formState[field.name]" autocomplete="off" />
@@ -30,7 +30,7 @@
                     v-model:value="formState[field.name]"
                     style="width: 120px"
                     >
-                    <a-select-option v-for="option in field.options" :value="option">{{ option }}</a-select-option>
+                    <a-select-option v-for="option in field.options" :value="option" v-bind:key="option">{{ option }}</a-select-option>
                 </a-select>
                 <a-date-picker v-if="field.inputType == 5" v-model:value="formState[field.name]" />
             </a-form-item>

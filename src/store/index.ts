@@ -1,4 +1,4 @@
-import { createStore, type StoreOptions } from "vuex";
+import { createStore } from "vuex";
 import type { RootState } from './types'
 import { requests } from "./requests";
 import { fields } from "./fields";

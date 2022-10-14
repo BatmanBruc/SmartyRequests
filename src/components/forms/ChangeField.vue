@@ -20,7 +20,7 @@
                 <a-textarea v-if="formState.inputType == 1" v-model:value="formState.default" type="text" autocomplete="off" />
                 <a-checkbox v-if="formState.inputType == 2" v-model:checked="formState.default" autocomplete="off" />
                 <a-select v-if="formState.inputType == 3" v-model:value="formState.default" autocomplete="off">
-                    <a-select-option v-for="option in options" :value="option">{{ option }}</a-select-option>
+                    <a-select-option v-for="option in options" v-bind:key="option" :value="option">{{ option }}</a-select-option>
                 </a-select>
                 <a-date-picker v-if="formState.inputType == 4" v-model:value="formState.default" />
             </a-form-item>
@@ -33,7 +33,7 @@
 <script lang="ts">
 import { defineComponent, ref, type PropType } from 'vue'
 import { notification } from 'ant-design-vue';
-import  { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
+import  { EditOutlined } from '@ant-design/icons-vue';
 import axios from 'axios'
 import { useStore } from 'vuex'
 import type { Field } from '../../store/fields/types'
@@ -43,11 +43,10 @@ import config from '../../config'
 export default defineComponent({
     name: "ChangeField",
     components: {
-        DeleteOutlined,
         EditOutlined
     },
     props: {
-        data: { type: Object as PropType<Field>, default: {} }
+        data: { type: Object as PropType<Field>, default: ()=>{} }
     },
     setup(props){
         const store = useStore();
@@ -71,7 +70,7 @@ export default defineComponent({
             options.value.splice(index, 1);
         }
         const formState = ref<Field>( { ...props.data, options: options.value })
-        const changeInputType = (event: any)=>{
+        const changeInputType = ()=>{
             formState.value.default = null
         }
         const fieldAssociations: {

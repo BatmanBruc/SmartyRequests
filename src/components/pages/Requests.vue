@@ -33,7 +33,7 @@ import  { DeleteOutlined, CheckOutlined } from '@ant-design/icons-vue';
 import config from '../../config'
 
 export default defineComponent({
-    name: "Requests",
+    name: "RequestsPage",
     components: {
       CreateRequest,
       ChangeRequest,
@@ -89,7 +89,7 @@ export default defineComponent({
           axios({
               url: config.domain + '/request/' + id,
               method: 'delete'
-          }).then((response)=>{
+          }).then(()=>{
             store.dispatch(ActionRequestTypes.GET_REQUESTS)
           })
         }

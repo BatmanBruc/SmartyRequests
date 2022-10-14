@@ -19,7 +19,7 @@
             </a-form-item>
             <a-form-item has-feedback label="Поле" name="inputType">
                 <a-radio-group @change="changeInputType" v-model:value="formState.inputType">
-                    <a-radio v-for="( type, index) in FieldInputTypes" :value="index">{{type}}</a-radio>
+                    <a-radio v-for="( type, index) in FieldInputTypes" v-bind:key="index" :value="index">{{type}}</a-radio>
                 </a-radio-group>
             </a-form-item>
             <a-form-item label="Опции" v-if="formState.inputType == 4">
@@ -27,14 +27,14 @@
                 <p :style="{
                     'margin-top': '15px',
                     'margin-bottom': '0px'
-                }" v-for="( item, index )  in options">{{ item }}<delete-outlined :style="{float: 'right'}" @click="deleteOption(index)" /></p>
+                }" v-for="( item, index )  in options" v-bind:key="index">{{ item }}<delete-outlined :style="{float: 'right'}" @click="deleteOption(index)" /></p>
             </a-form-item>
             <a-form-item has-feedback label="По умолчанию" name="default">
                 <a-input v-if="formState.inputType == 0" v-model:value="formState.default" type="text" autocomplete="off" />
                 <a-textarea v-if="formState.inputType == 1" v-model:value="formState.default" type="text" autocomplete="off" />
                 <a-checkbox v-if="formState.inputType == 2" v-model:checked="formState.default" autocomplete="off" />
                 <a-select v-if="formState.inputType == 3" v-model:value="formState.default" autocomplete="off">
-                    <a-select-option v-for="option in options" :value="option">{{ option }}</a-select-option>
+                    <a-select-option v-for="option in options" :value="option" v-bind:key="option">{{ option }}</a-select-option>
                 </a-select>
                 <a-date-picker v-if="formState.inputType == 4" v-model:value="formState.default" />
             </a-form-item>
@@ -56,7 +56,7 @@ import ActionFieldTypes from '../../store/fields/action-types'
 import config from '../../config'
 
 export default defineComponent({
-    name: "CreateRequest",
+    name: "CreateField",
     components: {
         DeleteOutlined
     },
