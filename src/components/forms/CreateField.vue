@@ -22,7 +22,7 @@
                     <a-radio v-for="( type, index) in FieldInputTypes" v-bind:key="index" :value="index">{{type}}</a-radio>
                 </a-radio-group>
             </a-form-item>
-            <a-form-item label="Опции" v-if="formState.inputType == 4">
+            <a-form-item label="Опции" v-if="formState.inputType == 3">
                 <a-input v-model:value="newOption" type="text" autocomplete="off" style="width: calc(100% - 42px)" /><a-button type="primary" @click="addOption">+</a-button>
                 <p :style="{
                     'margin-top': '15px',
