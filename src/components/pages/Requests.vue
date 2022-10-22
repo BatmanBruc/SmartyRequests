@@ -3,7 +3,7 @@
     <a-table :loading="loading" :dataSource="list" :columns="columns" :pagination="pagination" @change="handleChangePage">
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'edit'">
-          <ChangeRequest :data="record"/>
+          <ChangeRequest :id="record.id"/>
         </template>
         <template v-if="column.key === 'type_2'">
             <check-outlined v-if="record[column.dataIndex]" />

@@ -24,16 +24,23 @@
                 </a-select>
                 <a-date-picker v-if="formState.inputType == 4" v-model:value="formState.default" />
             </a-form-item>
-            <a-form-item has-feedback label="Обязательное поле" name="required">
+            <a-form-item label="Опции" v-if="formState.inputType == 3">
+                <a-input v-model:value="newOption" type="text" autocomplete="off" style="width: calc(100% - 42px)" /><a-button type="primary" @click="addOption">+</a-button>
+                <p :style="{
+                    'margin-top': '15px',
+                    'margin-bottom': '0px'
+                }" v-for="( item, index )  in options" v-bind:key="index">{{ item }}<delete-outlined :style="{float: 'right'}" @click="deleteOption(index)" /></p>
+            </a-form-item>
+            <a-form-item v-if="formState.inputType != 2" has-feedback label="Обязательное поле" name="required">
                 <a-checkbox v-model:checked="formState.required" autocomplete="off" />
             </a-form-item>
         </a-modal>
     </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, type PropType } from 'vue'
+import { defineComponent, ref, watch, type PropType } from 'vue'
 import { notification } from 'ant-design-vue';
-import  { EditOutlined } from '@ant-design/icons-vue';
+import  { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import axios from 'axios'
 import { useStore } from 'vuex'
 import type { Field } from '../../store/fields/types'
@@ -43,15 +50,20 @@ import config from '../../config'
 export default defineComponent({
     name: "ChangeField",
     components: {
-        EditOutlined
+        EditOutlined,
+        DeleteOutlined
     },
     props: {
-        data: { type: Object as PropType<Field>, default: ()=>{} }
+        id: { type: Number, default: ()=>null }
     },
     setup(props){
         const store = useStore();
 
         const visible = ref<boolean>(false);
+        watch(visible, ()=>{
+            if(visible.value)
+                get()
+        })
         const confirmLoading = ref<boolean>(false);
         const showModal = () => {
             visible.value = true;
@@ -64,25 +76,48 @@ export default defineComponent({
             if(!newOption.value) return
             options.value.push(newOption.value)
             newOption.value = ''
+            formState.value.options = options.value
         }
         const deleteOption = (index: number)=>{
             formState.value.default = null
             options.value.splice(index, 1);
+            formState.value.options = options.value
         }
-        const formState = ref<Field>( { ...props.data, options: options.value })
-        const changeInputType = ()=>{
-            formState.value.default = null
-        }
+        const formState = ref<Field>({
+            title: '',
+            name: '',
+            inputType: 0,
+            required: false,
+            default: '',
+            options: []
+        })
         const fieldAssociations: {
             [key:string]: string
         } = {
             title: 'Название',
             name: 'Ключ',
         }
+        const loading = ref<boolean>(false)
+        const get = () => {
+            loading.value = true;
+            axios({
+                url: config.domain + '/field/' + props.id,
+                method: 'get',
+            }).then((response)=>{
+                formState.value = response.data
+                options.value = response.data.options
+                loading.value = false;
+            }).catch((error)=>{
+                notification.error({
+                    message: error.response.data.description
+                })
+                loading.value = false;
+            })
+        };
         const send = () => {
             confirmLoading.value = true;
             axios({
-                url: config.domain + '/field/' + props.data.id,
+                url: config.domain + '/field/' + props.id,
                 method: 'post',
                 data: formState.value
             }).then((response)=>{
@@ -109,8 +144,7 @@ export default defineComponent({
             newOption,
             addOption,
             deleteOption,
-            options,
-            changeInputType
+            options
         };
     }
 })

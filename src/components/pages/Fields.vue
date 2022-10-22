@@ -2,14 +2,18 @@
     <CreateField/>
     <a-table :loading="loading" :dataSource="list" :columns="columns" :pagination="pagination" @change="handleChangePage">
       <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'default'">
+              <check-outlined v-if="record.inputType == 2 && record.default" />
+          </template>
           <template v-if="column.key === 'required'">
+              {{ record.inputType == 2 ? '-' : '' }}
               <check-outlined v-if="record.required" />
           </template>
           <template v-if="column.key === 'inputType'">
             {{ FieldInputTypes[record.inputType] }}
           </template>
           <template v-if="column.key === 'edit'">
-            <ChangeField :data="record"/>
+            <ChangeField :id="record.id"/>
           </template>
           <template v-if="column.key === 'del'">
             <a-popconfirm

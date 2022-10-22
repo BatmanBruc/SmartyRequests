@@ -64,7 +64,10 @@ export default defineComponent({
                 [key:string]: any
             } = {}
             for (let field of store.state.fields.list) {
-                obj[field.name] = field.default
+                if(field.inputType == 4)
+                    obj[field.name] = dayjs(field.default)
+                else
+                    obj[field.name] = field.default
             } 
             return obj;
         });

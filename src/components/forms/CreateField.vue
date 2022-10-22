@@ -45,7 +45,7 @@
     </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref} from 'vue'
+import { defineComponent, ref, watch} from 'vue'
 import { notification } from 'ant-design-vue';
 import  { DeleteOutlined } from '@ant-design/icons-vue';
 import axios from 'axios'
@@ -74,7 +74,8 @@ export default defineComponent({
             name: '',
             inputType: 1,
             required: false,
-            default: ''
+            default: '',
+            options: []
         })
         const changeInputType = (event: any)=>{
             if(event.target.value == 3){
@@ -117,10 +118,12 @@ export default defineComponent({
             if(!newOption.value) return
             options.value.push(newOption.value)
             newOption.value = ''
+            formState.value.options = options.value
         }
         const deleteOption = (index: number)=>{
             formState.value.default = null
             options.value.splice(index, 1);
+            formState.value.options = options.value
         }
         return {
             visible,
