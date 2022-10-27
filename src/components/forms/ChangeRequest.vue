@@ -21,18 +21,7 @@
                     <a-date-picker v-model:value="date" />
                 </a-form-item>
                 <a-form-item v-for="field in fields" has-feedback :label="field.title" :name="field.name" v-bind:key="field.id">
-                    <a-input v-if="field.inputType == 0" v-model:value="formState[field.name]" type="text" autocomplete="off" />
-                    <a-textarea v-if="field.inputType == 1" v-model:value="formState[field.name]" type="text" autocomplete="off" />
-                    <a-checkbox v-if="field.inputType == 2" v-model:checked="formState[field.name]" autocomplete="off" />
-                    <a-select
-                        v-if="field.inputType == 3"
-                        ref="select"
-                        v-model:value="formState[field.name]"
-                        style="width: 120px"
-                        >
-                        <a-select-option v-for="option in field.options" :value="option" v-bind:key="option">{{ option }}</a-select-option>
-                    </a-select>
-                    <a-date-picker v-if="field.inputType == 4" v-model:value="formState[field.name]" />
+                    <MultiField v-model:value="formState[field.name]" :options="getEnitySelectOptions(field.options)" :type="field.inputType" />
                 </a-form-item>
             </div>
             <a-spin :style="{
@@ -52,11 +41,14 @@ import  { EditOutlined } from '@ant-design/icons-vue';
 import type { Request } from '../../store/requests/types'
 import ActionRequestTypes from '../../store/requests/action-types'
 import config from '../../config'
+import MultiField from './MultiField.vue'
+import { getEnitySelectOptions } from './FieldTypesService'
 
 export default defineComponent({
     name: "CreateRequest",
     components: {
-        EditOutlined
+        EditOutlined,
+        MultiField
     },
     props: {
         id: { type: String, default: ()=>null }
@@ -156,6 +148,7 @@ export default defineComponent({
       date,
       fields,
       loading,
+      getEnitySelectOptions
     };
     }
 })

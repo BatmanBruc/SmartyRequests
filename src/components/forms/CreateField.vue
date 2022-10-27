@@ -30,13 +30,7 @@
                 }" v-for="( item, index )  in options" v-bind:key="index">{{ item }}<delete-outlined :style="{float: 'right'}" @click="deleteOption(index)" /></p>
             </a-form-item>
             <a-form-item has-feedback label="По умолчанию" name="default">
-                <a-input v-if="formState.inputType == 0" v-model:value="formState.default" type="text" autocomplete="off" />
-                <a-textarea v-if="formState.inputType == 1" v-model:value="formState.default" type="text" autocomplete="off" />
-                <a-checkbox v-if="formState.inputType == 2" v-model:checked="formState.default" autocomplete="off" />
-                <a-select v-if="formState.inputType == 3" v-model:value="formState.default" autocomplete="off">
-                    <a-select-option v-for="option in options" :value="option" v-bind:key="option">{{ option }}</a-select-option>
-                </a-select>
-                <a-date-picker v-if="formState.inputType == 4" v-model:value="formState.default" />
+                <MultiField v-model:value="formState.default" :options="options" :type="formState.inputType" />
             </a-form-item>
             <a-form-item v-if="formState.inputType != 2"  has-feedback label="Обязательное поле" name="required">
                 <a-checkbox v-model:checked="formState.required" autocomplete="off" />
@@ -48,17 +42,20 @@
 import { defineComponent, ref, watch} from 'vue'
 import { notification } from 'ant-design-vue';
 import  { DeleteOutlined } from '@ant-design/icons-vue';
+import type { DefaultOptionType } from 'rc-select/lib/Select'
 import axios from 'axios'
 import { useStore } from 'vuex'
 import type { Field } from '../../store/fields/types'
-import { FieldInputTypes } from '../../store/fields/types'
 import ActionFieldTypes from '../../store/fields/action-types'
 import config from '../../config'
+import MultiField from './MultiField.vue'
+import { getFieldTypesNames } from './FieldTypesService';
 
 export default defineComponent({
     name: "CreateField",
     components: {
-        DeleteOutlined
+        DeleteOutlined,
+        MultiField
     },
     setup(){
         const store = useStore();
@@ -113,10 +110,10 @@ export default defineComponent({
         };
     
         const newOption = ref<string>('')
-        const options = ref<Array<string>>([])
+        const options = ref<Array<DefaultOptionType>>([])
         const addOption = ()=>{
             if(!newOption.value) return
-            options.value.push(newOption.value)
+            options.value.push( { label: newOption.value })
             newOption.value = ''
             formState.value.options = options.value
         }
@@ -125,6 +122,7 @@ export default defineComponent({
             options.value.splice(index, 1);
             formState.value.options = options.value
         }
+        const FieldInputTypes: Array<string> = getFieldTypesNames()
         return {
             visible,
             confirmLoading,

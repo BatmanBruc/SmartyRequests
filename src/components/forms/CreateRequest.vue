@@ -21,18 +21,7 @@
                 <a-date-picker v-model:value="formState.date" />
             </a-form-item>
             <a-form-item v-for="field in fields" has-feedback :label="field.title" :name="field.name" v-bind:key="field.id">
-                <a-input v-if="field.inputType == 0" v-model:value="formState[field.name]" type="text" autocomplete="off" />
-                <a-textarea v-if="field.inputType == 1" v-model:value="formState[field.name]" type="text" autocomplete="off" />
-                <a-checkbox v-if="field.inputType == 2" v-model:checked="formState[field.name]" autocomplete="off" />
-                <a-select
-                    v-if="field.inputType == 3"
-                    ref="select"
-                    v-model:value="formState[field.name]"
-                    style="width: 120px"
-                    >
-                    <a-select-option v-for="option in field.options" :value="option" v-bind:key="option">{{ option }}</a-select-option>
-                </a-select>
-                <a-date-picker v-if="field.inputType == 4" v-model:value="formState[field.name]" />
+                <MultiField v-model:checked="formState[field.name]" v-model:value="formState[field.name]" :options="getEnitySelectOptions(field.options)" :type="field.inputType" />
             </a-form-item>
         </a-modal>
     </div>
@@ -46,9 +35,14 @@ import dayjs from 'dayjs';
 import ActionRequestTypes from '../../store/requests/action-types'
 import type { Request } from '../../store/requests/types'
 import config from '../../config'
+import MultiField from './MultiField.vue'
+import { getEnitySelectOptions } from './FieldTypesService'
 
 export default defineComponent({
     name: "CreateRequest",
+    components: {
+        MultiField
+    },
     setup(){
         const store = useStore();
 
@@ -110,15 +104,18 @@ export default defineComponent({
                 confirmLoading.value = false;
             })
         };
-    return {
-      visible,
-      confirmLoading,
-      showModal,
-      send,
-      formState,
-      fields,
-      fieldsData
-    };
+    
+        
+        return {
+        visible,
+        confirmLoading,
+        showModal,
+        send,
+        formState,
+        fields,
+        fieldsData,
+        getEnitySelectOptions
+        };
     }
 })
 </script>

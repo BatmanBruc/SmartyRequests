@@ -23,14 +23,17 @@
 import { defineComponent, computed, ref } from 'vue'
 import axios from 'axios'
 import { useStore } from 'vuex'
+import type { ColumnsType, ColumnType } from 'antd/es/table'
+import  { DeleteOutlined, CheckOutlined } from '@ant-design/icons-vue';
 import ActionRequestTypes from '../../store/requests/action-types'
 import ActionFieldTypes from '../../store/fields/action-types'
 import MutationRequestTypes from '../../store/requests/mutations-type'
 import type { Field } from '../../store/fields/types'
 import CreateRequest from '../forms/CreateRequest.vue'
 import ChangeRequest from '../forms/ChangeRequest.vue'
-import  { DeleteOutlined, CheckOutlined } from '@ant-design/icons-vue';
 import config from '../../config'
+import type { Request } from '../../store/requests/types' 
+import MultiField from '../forms/MultiField.vue'
 
 export default defineComponent({
     name: "RequestsPage",
@@ -38,33 +41,16 @@ export default defineComponent({
       CreateRequest,
       ChangeRequest,
       DeleteOutlined,
-      CheckOutlined
+      CheckOutlined,
+      MultiField
     },
     setup(){
         const store = useStore();
 
         store.dispatch(ActionRequestTypes.GET_REQUESTS)
         store.dispatch(ActionFieldTypes.GET_FIELDS)
-        const list = computed(()=> store.state.requests.list);
-
-        const defaultColumns = [
-          {
-            title: 'Название',
-            dataIndex: 'name',
-            key: 'name',
-          },
-          {
-            title: 'Описание',
-            dataIndex: 'description',
-            key: 'description',
-          },
-          {
-            title: 'Дата',
-            dataIndex: 'date',
-            key: 'date',
-          },
-        ];
-        const columns = computed(()=> {
+        const list = computed<Array<Request>>(()=> store.state.requests.list);
+        const columns = computed((): ColumnType<Request>[]=> {
           let extraColumns = store.state.fields.list.map((field: Field)=> { 
             return {
               title: field.title,
@@ -73,7 +59,22 @@ export default defineComponent({
             }
           })
           return [
-            ...defaultColumns,
+            {
+              title: 'Название',
+              dataIndex: 'name',
+              key: 'name',
+              
+            },
+            {
+              title: 'Описание',
+              dataIndex: 'description',
+              key: 'description',
+            },
+            {
+              title: 'Дата',
+              dataIndex: 'date',
+              key: 'date',
+            },
             ...extraColumns,
             {
               dataIndex: 'edit',
@@ -93,7 +94,7 @@ export default defineComponent({
             store.dispatch(ActionRequestTypes.GET_REQUESTS)
           })
         }
-        const loading = computed(()=> store.state.requests.loading)
+        const loading = computed<boolean>(()=> store.state.requests.loading)
         
         const pagination = computed(()=>({
           total: store.state.requests.count,
@@ -106,6 +107,8 @@ export default defineComponent({
         }
 
         const visibleChange = ref<boolean>(false)
+        const valueTest = ref('')
+        const typeInputTest = ref(0)
         return {
             list,
             loading,
@@ -113,7 +116,9 @@ export default defineComponent({
             pagination,
             handleChangePage,
             deleteRequest,
-            visibleChange
+            visibleChange,
+            valueTest,
+            typeInputTest
         }
     }
 })

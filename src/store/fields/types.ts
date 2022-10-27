@@ -1,10 +1,11 @@
+import type { DefaultOptionType } from 'rc-select/lib/Select'
 export interface Field {
     id?: string
     title: string;
     name: string;
     inputType: number,
     required: boolean,
-    options?: Array<string>
+    options?: Array<DefaultOptionType>
     default?: any
 }
 

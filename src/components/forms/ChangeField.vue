@@ -16,13 +16,7 @@
                 <a-input v-model:value="formState.name" type="text" autocomplete="off" />
             </a-form-item>
             <a-form-item has-feedback label="По умолчанию" name="default">
-                <a-input v-if="formState.inputType == 0" v-model:value="formState.default" type="text" autocomplete="off" />
-                <a-textarea v-if="formState.inputType == 1" v-model:value="formState.default" type="text" autocomplete="off" />
-                <a-checkbox v-if="formState.inputType == 2" v-model:checked="formState.default" autocomplete="off" />
-                <a-select v-if="formState.inputType == 3" v-model:value="formState.default" autocomplete="off">
-                    <a-select-option v-for="option in options" v-bind:key="option" :value="option">{{ option }}</a-select-option>
-                </a-select>
-                <a-date-picker v-if="formState.inputType == 4" v-model:value="formState.default" />
+                <MultiField v-model:value="formState.default" :options="options" :type="formState.inputType" />
             </a-form-item>
             <a-form-item label="Опции" v-if="formState.inputType == 3">
                 <a-input v-model:value="newOption" type="text" autocomplete="off" style="width: calc(100% - 42px)" /><a-button type="primary" @click="addOption">+</a-button>
@@ -41,17 +35,20 @@
 import { defineComponent, ref, watch, type PropType } from 'vue'
 import { notification } from 'ant-design-vue';
 import  { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
+import type { DefaultOptionType } from 'rc-select/lib/Select'
 import axios from 'axios'
 import { useStore } from 'vuex'
 import type { Field } from '../../store/fields/types'
 import ActionFieldTypes from '../../store/fields/action-types'
 import config from '../../config'
+import MultiField from './MultiField.vue'
 
 export default defineComponent({
     name: "ChangeField",
     components: {
         EditOutlined,
-        DeleteOutlined
+        DeleteOutlined,
+        MultiField
     },
     props: {
         id: { type: Number, default: ()=>null }
@@ -71,10 +68,10 @@ export default defineComponent({
         
     
         const newOption = ref<string>('')
-        const options = ref<Array<string>>([])
+        const options = ref<Array<DefaultOptionType>>([])
         const addOption = ()=>{
             if(!newOption.value) return
-            options.value.push(newOption.value)
+            options.value.push({ label: newOption.value })
             newOption.value = ''
             formState.value.options = options.value
         }

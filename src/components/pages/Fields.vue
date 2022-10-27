@@ -33,10 +33,10 @@ import axios from 'axios'
 import { useStore } from 'vuex'
 import ActionFieldTypes from '../../store/fields/action-types'
 import MutationFieldTypes from '../../store/fields/mutations-type'
-import { FieldInputTypes } from '../../store/fields/types'
 import CreateField from '../forms/CreateField.vue'
 import ChangeField from '../forms/ChangeField.vue'
 import config from '../../config'
+import { getFieldTypesNames } from '../forms/FieldTypesService';
 
 export default defineComponent({
     name: "FieldsPage",
@@ -106,6 +106,7 @@ export default defineComponent({
           store.commit(MutationFieldTypes.CHANGE_FIELDS_PAGE, payload.current)
           store.dispatch(ActionFieldTypes.GET_FIELDS)
         }
+        const FieldInputTypes: Array<string> = getFieldTypesNames()
         return {
             list,
             loading,
