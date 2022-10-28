@@ -42,7 +42,7 @@ const getFieldTypesElements = (): Array<Component>=>{
         return field.element
     })
 }
-const getEnitySelectOptions = (options: Array<string>)=>{
+const getEnitySelectOptions = (options: Array<string>): { label: string, value: string }=>{
     return options.map((opt: string)=>{ return { label: opt, value: opt }})
 }
 export {
